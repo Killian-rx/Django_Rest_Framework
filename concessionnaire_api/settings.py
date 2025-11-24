@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_spectacular',  # Documentation OpenAPI/Swagger
     # Local apps
     'vehicules',
 ]
@@ -139,6 +140,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
     ],
+    # Configuration pour la documentation OpenAPI
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # JWT Settings
@@ -150,5 +153,20 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# Configuration drf-spectacular pour la documentation OpenAPI
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Concessionnaire & Véhicules',
+    'DESCRIPTION': 'API REST Django pour gérer des concessionnaires et leurs véhicules. Documentation complète avec authentification JWT.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': '/api/',
+    'TAGS': [
+        {'name': 'Authentification', 'description': 'Endpoints pour la gestion des utilisateurs et tokens JWT'},
+        {'name': 'Concessionnaires', 'description': 'Gestion des concessionnaires'},
+        {'name': 'Véhicules', 'description': 'Gestion des véhicules par concessionnaire'},
+    ],
 }
 

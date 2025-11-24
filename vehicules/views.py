@@ -10,6 +10,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 from .models import Concessionnaire, Vehicule
 from .serializers import (
     ConcessionnaireSerializer,
@@ -26,6 +28,31 @@ class ConcessionnaireListView(APIView):
     """
     permission_classes = [IsAuthenticated]
     
+    @extend_schema(
+        tags=['Concessionnaires'],
+        summary='Liste tous les concessionnaires',
+        description='Retourne la liste complète de tous les concessionnaires enregistrés.',
+        responses={
+            200: ConcessionnaireSerializer(many=True),
+            401: {'description': 'Non authentifié - Token JWT requis'},
+        },
+        examples=[
+            OpenApiExample(
+                'Exemple de réponse',
+                value=[
+                    {
+                        'id': 1,
+                        'nom': 'AutoPlus Paris'
+                    },
+                    {
+                        'id': 2,
+                        'nom': 'MotoCenter Lyon'
+                    }
+                ],
+                response_only=True,
+            ),
+        ],
+    )
     def get(self, request):
         """Retourne la liste de tous les concessionnaires."""
         concessionnaires = Concessionnaire.objects.all()
@@ -41,6 +68,35 @@ class ConcessionnaireDetailView(APIView):
     """
     permission_classes = [IsAuthenticated]
     
+    @extend_schema(
+        tags=['Concessionnaires'],
+        summary='Détails d\'un concessionnaire',
+        description='Retourne les informations détaillées d\'un concessionnaire spécifique.',
+        parameters=[
+            OpenApiParameter(
+                name='id',
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.PATH,
+                description='ID du concessionnaire',
+                required=True,
+            ),
+        ],
+        responses={
+            200: ConcessionnaireSerializer,
+            401: {'description': 'Non authentifié - Token JWT requis'},
+            404: {'description': 'Concessionnaire non trouvé'},
+        },
+        examples=[
+            OpenApiExample(
+                'Exemple de réponse',
+                value={
+                    'id': 1,
+                    'nom': 'AutoPlus Paris'
+                },
+                response_only=True,
+            ),
+        ],
+    )
     def get(self, request, id):
         """Retourne les détails d'un concessionnaire spécifique."""
         concessionnaire = get_object_or_404(Concessionnaire, pk=id)
@@ -56,6 +112,51 @@ class ConcessionnaireVehiculesListView(APIView):
     """
     permission_classes = [IsAuthenticated]
     
+    @extend_schema(
+        tags=['Véhicules'],
+        summary='Liste des véhicules d\'un concessionnaire',
+        description='Retourne la liste complète de tous les véhicules appartenant à un concessionnaire spécifique.',
+        parameters=[
+            OpenApiParameter(
+                name='id',
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.PATH,
+                description='ID du concessionnaire',
+                required=True,
+            ),
+        ],
+        responses={
+            200: VehiculeSerializer(many=True),
+            401: {'description': 'Non authentifié - Token JWT requis'},
+            404: {'description': 'Concessionnaire non trouvé'},
+        },
+        examples=[
+            OpenApiExample(
+                'Exemple de réponse',
+                value=[
+                    {
+                        'id': 1,
+                        'type': 'auto',
+                        'marque': 'Peugeot',
+                        'chevaux': 120,
+                        'prix_ht': 25000.0,
+                        'concessionnaire': 1,
+                        'concessionnaire_nom': 'AutoPlus Paris'
+                    },
+                    {
+                        'id': 2,
+                        'type': 'moto',
+                        'marque': 'Yamaha',
+                        'chevaux': 80,
+                        'prix_ht': 12000.0,
+                        'concessionnaire': 1,
+                        'concessionnaire_nom': 'AutoPlus Paris'
+                    }
+                ],
+                response_only=True,
+            ),
+        ],
+    )
     def get(self, request, id):
         """
         Retourne la liste de tous les véhicules d'un concessionnaire spécifique.
@@ -76,6 +177,47 @@ class ConcessionnaireVehiculeDetailView(APIView):
     """
     permission_classes = [IsAuthenticated]
     
+    @extend_schema(
+        tags=['Véhicules'],
+        summary='Détails d\'un véhicule',
+        description='Retourne les informations détaillées d\'un véhicule spécifique appartenant à un concessionnaire.',
+        parameters=[
+            OpenApiParameter(
+                name='id',
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.PATH,
+                description='ID du concessionnaire',
+                required=True,
+            ),
+            OpenApiParameter(
+                name='vehicule_id',
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.PATH,
+                description='ID du véhicule',
+                required=True,
+            ),
+        ],
+        responses={
+            200: VehiculeDetailSerializer,
+            401: {'description': 'Non authentifié - Token JWT requis'},
+            404: {'description': 'Concessionnaire ou véhicule non trouvé'},
+        },
+        examples=[
+            OpenApiExample(
+                'Exemple de réponse',
+                value={
+                    'id': 1,
+                    'type': 'auto',
+                    'marque': 'Peugeot',
+                    'chevaux': 120,
+                    'prix_ht': 25000.0,
+                    'concessionnaire': 1,
+                    'concessionnaire_nom': 'AutoPlus Paris'
+                },
+                response_only=True,
+            ),
+        ],
+    )
     def get(self, request, id, vehicule_id):
         """
         Retourne les détails d'un véhicule spécifique d'un concessionnaire.

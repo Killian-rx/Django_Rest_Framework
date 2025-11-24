@@ -47,6 +47,11 @@ python manage.py runserver
 
 Le serveur sera accessible sur `http://127.0.0.1:8000/`
 
+9. **Accéder à la documentation interactive** :
+   - **Swagger UI** : `http://127.0.0.1:8000/api/docs/`
+   - **ReDoc** : `http://127.0.0.1:8000/api/redoc/`
+   - **Schema OpenAPI** : `http://127.0.0.1:8000/api/schema/`
+
 ## 📚 Structure du projet
 
 ```
@@ -65,6 +70,32 @@ Django_Rest_Framework/
 ├── requirements.txt
 └── README.md
 ```
+
+## 📖 Documentation Interactive (Swagger/OpenAPI)
+
+L'API dispose d'une documentation interactive générée automatiquement avec **drf-spectacular**, similaire à FastAPI :
+
+- **Swagger UI** : `http://127.0.0.1:8000/api/docs/` - Interface interactive pour tester les endpoints
+- **ReDoc** : `http://127.0.0.1:8000/api/redoc/` - Documentation élégante et lisible
+- **Schema OpenAPI** : `http://127.0.0.1:8000/api/schema/` - Schéma OpenAPI au format JSON/YAML
+
+### Fonctionnalités de la documentation
+
+La documentation permet de :
+- ✅ Voir tous les endpoints disponibles avec leurs descriptions détaillées
+- ✅ Tester les endpoints directement depuis le navigateur (comme FastAPI)
+- ✅ Voir les schémas de requête/réponse avec exemples
+- ✅ Comprendre les paramètres requis et les codes de réponse
+- ✅ S'authentifier avec JWT directement dans l'interface Swagger
+
+### Utilisation dans Swagger UI
+
+1. Accédez à `http://127.0.0.1:8000/api/docs/`
+2. Pour tester les endpoints protégés :
+   - Cliquez sur le bouton **"Authorize"** en haut à droite
+   - Entrez votre token JWT au format : `Bearer <votre_token_access>`
+   - Cliquez sur **"Authorize"** puis **"Close"**
+3. Vous pouvez maintenant tester tous les endpoints directement depuis l'interface !
 
 ## 🔐 Authentification JWT
 
